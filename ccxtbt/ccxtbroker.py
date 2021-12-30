@@ -166,10 +166,14 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
         self.cash = self.store._cash
         return self.cash
 
+    get_cash = getcash
+
     def getvalue(self, datas=None):
         # return self.store.getvalue(self.currency)
         self.value = self.store._value
         return self.value
+
+    get_value = getvalue
 
     def get_notification(self):
         try:
