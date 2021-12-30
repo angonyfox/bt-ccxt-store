@@ -1,4 +1,5 @@
 # bt-ccxt-store
+
 A fork of Ed Bartosh's CCXT Store Work with some additions added for a projects
 I have been working on.
 
@@ -7,6 +8,23 @@ vary.
 
 Check out the example script to see how to setup and run on Kraken.
 
+# Installation
+
+```buildoutcfg
+pip install .
+```
+
+# Development Installation
+
+```buildoutcfg
+pip install -e .
+```
+
+# Manual builds
+
+```buildoutcfg
+python setup.py bdist_wheel
+```
 
 # Additions / Changes
 
@@ -16,18 +34,18 @@ Check out the example script to see how to setup and run on Kraken.
   Note that some exchanges may send different notification data
 
 - Broker mapping added as I noticed that there differences between the expected
-  order_types and retuned status's from canceling an order
+  order_types and returned status's from canceling an order
 
-- Added a new mappings parameter to the script with defaults.
+- Added a new mapping parameter to the script with defaults.
 
 - Added a new get_wallet_balance method. This will allow manual checking of the balance.
   The method will allow setting parameters. Useful for getting margin balances
 
 - Modified getcash() and getvalue():
-      Backtrader will call getcash and getvalue before and after next, slowing things down
-      with rest calls. As such, these will just return the last values called from getbalance().
-      Because getbalance() will not be called by cerebro, you need to do this manually as and when  
-      you want the information.
+  Backtrader will call getcash and getvalue before and after next, slowing things down
+  with rest calls. As such, these will just return the last values called from getbalance().
+  Because getbalance() will not be called by cerebro, you need to do this manually as and when  
+   you want the information.
 
 - **Note:** The broker mapping should contain a new dict for order_types and mappings like below:
 
@@ -51,9 +69,9 @@ Check out the example script to see how to setup and run on Kraken.
       }
 ```
 
-  - Added new private_end_point method to allow using any private non-unified end point.
-    An example for getting a list of postions and then closing them on Bitfinex
-    is below:
+- Added new private_end_point method to allow using any private non-unified end point.
+  An example for getting a list of positions and then closing them on Bitfinex
+  is below:
 
 ```
       # NOTE - THIS CLOSES A LONG POSITION. TO CLOSE A SHORT, REMOVE THE '-' FROM
@@ -76,8 +94,8 @@ Check out the example script to see how to setup and run on Kraken.
 
 ## CCXTStore
 
-Redesigned the way that the store is intialized, data and brokers are requested.
-The store now uses metaparams and has methods for `getbroker()` and `getdata()`.
+Redesigned the way that the store is initialized, data and brokers are requested.
+The store now uses meta params and has methods for `getbroker()` and `getdata()`.
 A store is initialized in a similar way to other backtrader stores. e.g
 
 ```
@@ -102,7 +120,7 @@ A store is initialized in a similar way to other backtrader stores. e.g
                            compression=1, ohlcv_limit=50, fetch_ohlcv_params = {'partial': False}) #, historical=True)
 ```
 
- - Added new private_end_point method to allow using any private non-unified end point. For an example, see broker section above.
+- Added new private_end_point method to allow using any private non-unified end point. For an example, see broker section above.
 
 ## CCXTFeed
 
