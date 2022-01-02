@@ -203,11 +203,11 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         return self.exchange.fetch_order(oid, symbol)
 
     @retry
-    def fetch_open_orders(self, symbol=None):
-        if symbol == None:
-            return self.exchange.fetchOpenOrders()
+    def fetch_open_orders(self, symbol=None, since=None, limit=None, params={}):
+        if symbol is None:
+            return self.exchange.fetchOpenOrders(since=since, limit=limit, params=params)
         else:
-            return self.exchange.fetchOpenOrders(symbol)
+            return self.exchange.fetchOpenOrders(symbol=symbol, since=since, limit=limit, params=params)
 
     @retry
     def private_end_point(self, type, endpoint, params):
