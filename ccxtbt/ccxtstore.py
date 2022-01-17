@@ -20,6 +20,8 @@
 ###############################################################################
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import collections
+import threading
 import time
 from datetime import datetime
 from functools import wraps
@@ -27,7 +29,7 @@ from functools import wraps
 import backtrader as bt
 import ccxt
 from backtrader.metabase import MetaParams
-from backtrader.utils.py3 import with_metaclass
+from backtrader.utils.py3 import queue, with_metaclass
 from ccxt.base.errors import NetworkError, ExchangeError
 
 
@@ -54,6 +56,13 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
     Added new private_end_point method to allow using any private non-unified end point
 
     """
+
+    params = {
+        "account_poll_timeout": 5,
+        "poll_timeout": 2,
+        "reconnections": -1,
+        "reconnect_timeout": 5,
+    }
 
     # Supported granularities
     _GRANULARITIES = {
@@ -93,28 +102,71 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         """Returns broker with *args, **kwargs from registered ``BrokerCls``"""
         return cls.BrokerCls(*args, **kwargs)
 
-    def __init__(self, exchange, currency, config, retries=5, debug=False, sandbox=False):
+    def __init__(self, exchange, currency=None, config={}, retries=5, debug=False, sandbox=False):
+        super().__init__()
+
+        self.notifs = collections.deque()  # store notifications for cerebro
+        self.broker = None  # broker instance
+        self.datas = list()  # datas that have registered over start
+        self._env = None  # reference to cerebro for general notifications
+        self._evt_acct = threading.Event()
         self.exchange = getattr(ccxt, exchange)(config)
         if sandbox:
             self.exchange.set_sandbox_mode(True)
         self.currency = currency
         self.retries = retries
         self.debug = debug
-        balance = self.exchange.fetch_balance() if "secret" in config else 0
-        try:
-            if balance == 0 or not balance["free"][currency]:
-                self._cash = 0
-            else:
-                self._cash = balance["free"][currency]
-        except KeyError:  # never funded or eg. all USD exchanged
-            self._cash = 0
-        try:
-            if balance == 0 or not balance["total"][currency]:
-                self._value = 0
-            else:
-                self._value = balance["total"][currency]
-        except KeyError:
-            self._value = 0
+        self.balances = dict()
+
+        # balance = self.exchange.fetch_balance() if "secret" in config else 0
+        # try:
+        #     if balance == 0 or not balance["free"][currency]:
+        #         self._cash = 0
+        #     else:
+        #         self._cash = balance["free"][currency]
+        # except KeyError:  # never funded or eg. all USD exchanged
+        #     self._cash = 0
+        # try:
+        #     if balance == 0 or not balance["total"][currency]:
+        #         self._value = 0
+        #     else:
+        #         self._value = balance["total"][currency]
+        # except KeyError:
+        #     self._value = 0
+        self._cash = 0.0  # margin available, currently available cash
+        self._value = 0.0  # account balance
+
+    def start(self, data=None, broker=None):
+        # datas require some processing to kickstart data reception
+        if data is None and broker is None:
+            self.cash = None
+            return
+
+        if data is not None:
+            self._env = data._env
+            # For datas simulate a queue with None to kickstart co
+            self.datas.append(data)
+
+            if self.broker is not None:
+                self.broker.data_started(data)
+
+        elif broker is not None:
+            self.broker = broker
+            self.broker_threads()
+
+    def stop(self):
+        # signal end of thread
+        if self.broker is not None:
+            self.q_account.put(None)
+
+    def put_notification(self, msg, *args, **kwargs):
+        """Adds a notification"""
+        self.notifs.append((msg, args, kwargs))
+
+    def get_notifications(self):
+        """Return the pending "store" notifications"""
+        self.notifs.append(None)  # put a mark / threads could still append
+        return [x for x in iter(self.notifs.popleft, None)]
 
     def get_granularity(self, timeframe, compression):
         if not self.exchange.has["fetchOHLCV"]:
@@ -157,6 +209,8 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
     def get_wallet_balance(self, currency, params=None):
         balance = self.exchange.fetch_balance(params)
         return balance
+    def fetch_balance(self, **kwargs):
+        self.balances = self.exchange.fetch_balance(kwargs)
 
     @retry
     def get_balance(self):
@@ -172,6 +226,37 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
     def getposition(self):
         return self._value
         # return self.getvalue(currency)
+
+    def broker_threads(self):
+        self.q_account = queue.Queue()
+        self.q_account.put(True)  # force an immediate update
+        t = threading.Thread(target=self._t_account)
+        t.daemon = True
+        t.start()
+
+        # Wait once for the values to be set
+        self._evt_acct.wait(self.p.account_poll_timeout)
+
+    def _t_account(self):
+        while True:
+            try:
+                msg = self.q_account.get(timeout=self.p.account_poll_timeout)
+                if msg is None:
+                    break  # end of thread
+            except queue.Empty:  # timeout -> time to refresh
+                pass
+
+            try:
+                self.fetch_balance()
+            except NetworkError as e:
+                self.put_notification(f"fetch balance failed due to network error: {str(e)}")
+            except ExchangeError as e:
+                self.put_notification(f"fetch balance failed due to exchange error: {str(e)}")
+            except Exception as e:
+                self.put_notification(str(e))
+                continue
+
+            self._evt_acct.set()
 
     @retry
     def create_order(self, symbol, order_type, side, amount, price, params):

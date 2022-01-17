@@ -137,6 +137,9 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
 
         self.use_order_params = True
 
+    def start(self):
+        super().start()
+        self.store.start(broker=self)
     def get_balance(self):
         self.store.get_balance()
         self.cash = self.store._cash
