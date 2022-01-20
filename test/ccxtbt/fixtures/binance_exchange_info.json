@@ -1,34 +1,38 @@
 {
-  "BNB/BUSD": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 2, "price": 2 },
-    "limits": {
-      "amount": { "min": 0.01, "max": 9000.0 },
-      "price": { "min": 0.01, "max": 10000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
+  "timezone": "UTC",
+  "serverTime": 1642479198535,
+  "rateLimits": [
+    {
+      "rateLimitType": "REQUEST_WEIGHT",
+      "interval": "MINUTE",
+      "intervalNum": 1,
+      "limit": 1200
     },
-    "id": "BNBBUSD",
-    "lowercaseId": "bnbbusd",
-    "symbol": "BNB/BUSD",
-    "base": "BNB",
-    "quote": "BUSD",
-    "baseId": "BNB",
-    "quoteId": "BUSD",
-    "info": {
+    {
+      "rateLimitType": "ORDERS",
+      "interval": "SECOND",
+      "intervalNum": 10,
+      "limit": 50
+    },
+    {
+      "rateLimitType": "ORDERS",
+      "interval": "DAY",
+      "intervalNum": 1,
+      "limit": 160000
+    }
+  ],
+  "exchangeFilters": [],
+  "symbols": [
+    {
       "symbol": "BNBBUSD",
       "status": "TRADING",
       "baseAsset": "BNB",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BUSD",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -52,7 +56,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -64,64 +68,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "BTC/BUSD": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 6, "price": 2 },
-    "limits": {
-      "amount": { "min": 1e-6, "max": 900.0 },
-      "price": { "min": 0.01, "max": 1000000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 100.0 }
-    },
-    "id": "BTCBUSD",
-    "lowercaseId": "btcbusd",
-    "symbol": "BTC/BUSD",
-    "base": "BTC",
-    "quote": "BUSD",
-    "baseId": "BTC",
-    "quoteId": "BUSD",
-    "info": {
+    {
       "symbol": "BTCBUSD",
       "status": "TRADING",
       "baseAsset": "BTC",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BUSD",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -145,7 +124,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -157,64 +136,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "100.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "ETH/BUSD": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 5, "price": 2 },
-    "limits": {
-      "amount": { "min": 1e-5, "max": 9000.0 },
-      "price": { "min": 0.01, "max": 100000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
-    },
-    "id": "ETHBUSD",
-    "lowercaseId": "ethbusd",
-    "symbol": "ETH/BUSD",
-    "base": "ETH",
-    "quote": "BUSD",
-    "baseId": "ETH",
-    "quoteId": "BUSD",
-    "info": {
+    {
       "symbol": "ETHBUSD",
       "status": "TRADING",
       "baseAsset": "ETH",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BUSD",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -238,7 +192,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -250,64 +204,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "LTC/BUSD": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 5, "price": 2 },
-    "limits": {
-      "amount": { "min": 1e-5, "max": 9000.0 },
-      "price": { "min": 0.01, "max": 100000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
-    },
-    "id": "LTCBUSD",
-    "lowercaseId": "ltcbusd",
-    "symbol": "LTC/BUSD",
-    "base": "LTC",
-    "quote": "BUSD",
-    "baseId": "LTC",
-    "quoteId": "BUSD",
-    "info": {
+    {
       "symbol": "LTCBUSD",
       "status": "TRADING",
       "baseAsset": "LTC",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BUSD",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -331,7 +260,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -343,64 +272,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "TRX/BUSD": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 1, "price": 5 },
-    "limits": {
-      "amount": { "min": 0.1, "max": 90000.0 },
-      "price": { "min": 1e-5, "max": 1000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 10000.0 }
-    },
-    "id": "TRXBUSD",
-    "lowercaseId": "trxbusd",
-    "symbol": "TRX/BUSD",
-    "base": "TRX",
-    "quote": "BUSD",
-    "baseId": "TRX",
-    "quoteId": "BUSD",
-    "info": {
+    {
       "symbol": "TRXBUSD",
       "status": "TRADING",
       "baseAsset": "TRX",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BUSD",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -424,7 +328,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -436,64 +340,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "10000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "XRP/BUSD": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 1, "price": 4 },
-    "limits": {
-      "amount": { "min": 0.1, "max": 90000.0 },
-      "price": { "min": 0.0001, "max": 1000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 10000.0 }
-    },
-    "id": "XRPBUSD",
-    "lowercaseId": "xrpbusd",
-    "symbol": "XRP/BUSD",
-    "base": "XRP",
-    "quote": "BUSD",
-    "baseId": "XRP",
-    "quoteId": "BUSD",
-    "info": {
+    {
       "symbol": "XRPBUSD",
       "status": "TRADING",
       "baseAsset": "XRP",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BUSD",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -517,7 +396,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -529,64 +408,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "10000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "BNB/USDT": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 2, "price": 2 },
-    "limits": {
-      "amount": { "min": 0.01, "max": 9000.0 },
-      "price": { "min": 0.01, "max": 10000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
-    },
-    "id": "BNBUSDT",
-    "lowercaseId": "bnbusdt",
-    "symbol": "BNB/USDT",
-    "base": "BNB",
-    "quote": "USDT",
-    "baseId": "BNB",
-    "quoteId": "USDT",
-    "info": {
+    {
       "symbol": "BNBUSDT",
       "status": "TRADING",
       "baseAsset": "BNB",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "USDT",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -610,7 +464,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -622,64 +476,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "BTC/USDT": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 6, "price": 2 },
-    "limits": {
-      "amount": { "min": 1e-6, "max": 900.0 },
-      "price": { "min": 0.01, "max": 1000000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 100.0 }
-    },
-    "id": "BTCUSDT",
-    "lowercaseId": "btcusdt",
-    "symbol": "BTC/USDT",
-    "base": "BTC",
-    "quote": "USDT",
-    "baseId": "BTC",
-    "quoteId": "USDT",
-    "info": {
+    {
       "symbol": "BTCUSDT",
       "status": "TRADING",
       "baseAsset": "BTC",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "USDT",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -703,7 +532,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -715,64 +544,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "100.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "ETH/USDT": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 5, "price": 2 },
-    "limits": {
-      "amount": { "min": 1e-5, "max": 9000.0 },
-      "price": { "min": 0.01, "max": 100000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
-    },
-    "id": "ETHUSDT",
-    "lowercaseId": "ethusdt",
-    "symbol": "ETH/USDT",
-    "base": "ETH",
-    "quote": "USDT",
-    "baseId": "ETH",
-    "quoteId": "USDT",
-    "info": {
+    {
       "symbol": "ETHUSDT",
       "status": "TRADING",
       "baseAsset": "ETH",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "USDT",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -796,7 +600,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -808,64 +612,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "LTC/USDT": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 5, "price": 2 },
-    "limits": {
-      "amount": { "min": 1e-5, "max": 9000.0 },
-      "price": { "min": 0.01, "max": 100000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
-    },
-    "id": "LTCUSDT",
-    "lowercaseId": "ltcusdt",
-    "symbol": "LTC/USDT",
-    "base": "LTC",
-    "quote": "USDT",
-    "baseId": "LTC",
-    "quoteId": "USDT",
-    "info": {
+    {
       "symbol": "LTCUSDT",
       "status": "TRADING",
       "baseAsset": "LTC",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "USDT",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -889,7 +668,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -901,64 +680,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "TRX/USDT": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 1, "price": 5 },
-    "limits": {
-      "amount": { "min": 0.1, "max": 90000.0 },
-      "price": { "min": 1e-5, "max": 1000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 10000.0 }
-    },
-    "id": "TRXUSDT",
-    "lowercaseId": "trxusdt",
-    "symbol": "TRX/USDT",
-    "base": "TRX",
-    "quote": "USDT",
-    "baseId": "TRX",
-    "quoteId": "USDT",
-    "info": {
+    {
       "symbol": "TRXUSDT",
       "status": "TRADING",
       "baseAsset": "TRX",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "USDT",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -982,7 +736,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -994,64 +748,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "10000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "XRP/USDT": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 1, "price": 4 },
-    "limits": {
-      "amount": { "min": 0.1, "max": 90000.0 },
-      "price": { "min": 0.0001, "max": 1000.0 },
-      "cost": { "min": 10.0, "max": null },
-      "market": { "min": 0.0, "max": 10000.0 }
-    },
-    "id": "XRPUSDT",
-    "lowercaseId": "xrpusdt",
-    "symbol": "XRP/USDT",
-    "base": "XRP",
-    "quote": "USDT",
-    "baseId": "XRP",
-    "quoteId": "USDT",
-    "info": {
+    {
       "symbol": "XRPUSDT",
       "status": "TRADING",
       "baseAsset": "XRP",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "USDT",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -1075,7 +804,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -1087,64 +816,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "10.00000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "10000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "BNB/BTC": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 2, "price": 6 },
-    "limits": {
-      "amount": { "min": 0.01, "max": 9000.0 },
-      "price": { "min": 1e-6, "max": 10.0 },
-      "cost": { "min": 0.0001, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
-    },
-    "id": "BNBBTC",
-    "lowercaseId": "bnbbtc",
-    "symbol": "BNB/BTC",
-    "base": "BNB",
-    "quote": "BTC",
-    "baseId": "BNB",
-    "quoteId": "BTC",
-    "info": {
+    {
       "symbol": "BNBBTC",
       "status": "TRADING",
       "baseAsset": "BNB",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BTC",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -1168,7 +872,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -1180,64 +884,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "0.00010000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "ETH/BTC": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 5, "price": 6 },
-    "limits": {
-      "amount": { "min": 1e-5, "max": 9000.0 },
-      "price": { "min": 1e-6, "max": 100.0 },
-      "cost": { "min": 0.0001, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
-    },
-    "id": "ETHBTC",
-    "lowercaseId": "ethbtc",
-    "symbol": "ETH/BTC",
-    "base": "ETH",
-    "quote": "BTC",
-    "baseId": "ETH",
-    "quoteId": "BTC",
-    "info": {
+    {
       "symbol": "ETHBTC",
       "status": "TRADING",
       "baseAsset": "ETH",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BTC",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -1261,7 +940,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -1273,64 +952,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "0.00010000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "LTC/BTC": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 5, "price": 6 },
-    "limits": {
-      "amount": { "min": 1e-5, "max": 9000.0 },
-      "price": { "min": 1e-6, "max": 100.0 },
-      "cost": { "min": 0.0001, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
-    },
-    "id": "LTCBTC",
-    "lowercaseId": "ltcbtc",
-    "symbol": "LTC/BTC",
-    "base": "LTC",
-    "quote": "BTC",
-    "baseId": "LTC",
-    "quoteId": "BTC",
-    "info": {
+    {
       "symbol": "LTCBTC",
       "status": "TRADING",
       "baseAsset": "LTC",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BTC",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -1354,7 +1008,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -1366,64 +1020,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "0.00010000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "TRX/BTC": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 1, "price": 8 },
-    "limits": {
-      "amount": { "min": 0.1, "max": 90000.0 },
-      "price": { "min": 1e-8, "max": 1.0 },
-      "cost": { "min": 0.0001, "max": null },
-      "market": { "min": 0.0, "max": 10000.0 }
-    },
-    "id": "TRXBTC",
-    "lowercaseId": "trxbtc",
-    "symbol": "TRX/BTC",
-    "base": "TRX",
-    "quote": "BTC",
-    "baseId": "TRX",
-    "quoteId": "BTC",
-    "info": {
+    {
       "symbol": "TRXBTC",
       "status": "TRADING",
       "baseAsset": "TRX",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BTC",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -1447,7 +1076,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -1459,64 +1088,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "0.00010000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "10000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "XRP/BTC": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 1, "price": 8 },
-    "limits": {
-      "amount": { "min": 0.1, "max": 90000.0 },
-      "price": { "min": 1e-8, "max": 1.0 },
-      "cost": { "min": 0.0001, "max": null },
-      "market": { "min": 0.0, "max": 10000.0 }
-    },
-    "id": "XRPBTC",
-    "lowercaseId": "xrpbtc",
-    "symbol": "XRP/BTC",
-    "base": "XRP",
-    "quote": "BTC",
-    "baseId": "XRP",
-    "quoteId": "BTC",
-    "info": {
+    {
       "symbol": "XRPBTC",
       "status": "TRADING",
       "baseAsset": "XRP",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BTC",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -1540,7 +1144,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -1552,64 +1156,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "0.00010000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "10000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "LTC/BNB": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 5, "price": 4 },
-    "limits": {
-      "amount": { "min": 1e-5, "max": 9000.0 },
-      "price": { "min": 0.0001, "max": 1000.0 },
-      "cost": { "min": 0.1, "max": null },
-      "market": { "min": 0.0, "max": 1000.0 }
-    },
-    "id": "LTCBNB",
-    "lowercaseId": "ltcbnb",
-    "symbol": "LTC/BNB",
-    "base": "LTC",
-    "quote": "BNB",
-    "baseId": "LTC",
-    "quoteId": "BNB",
-    "info": {
+    {
       "symbol": "LTCBNB",
       "status": "TRADING",
       "baseAsset": "LTC",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BNB",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -1633,7 +1212,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -1645,64 +1224,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "0.10000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "1000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "TRX/BNB": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 1, "price": 7 },
-    "limits": {
-      "amount": { "min": 0.1, "max": 90000.0 },
-      "price": { "min": 1e-7, "max": 10.0 },
-      "cost": { "min": 0.1, "max": null },
-      "market": { "min": 0.0, "max": 10000.0 }
-    },
-    "id": "TRXBNB",
-    "lowercaseId": "trxbnb",
-    "symbol": "TRX/BNB",
-    "base": "TRX",
-    "quote": "BNB",
-    "baseId": "TRX",
-    "quoteId": "BNB",
-    "info": {
+    {
       "symbol": "TRXBNB",
       "status": "TRADING",
       "baseAsset": "TRX",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BNB",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -1726,7 +1280,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -1738,64 +1292,39 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "0.10000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "10000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
     },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  },
-  "XRP/BNB": {
-    "percentage": true,
-    "feeSide": "get",
-    "tierBased": false,
-    "taker": 0.001,
-    "maker": 0.001,
-    "precision": { "base": 8, "quote": 8, "amount": 1, "price": 6 },
-    "limits": {
-      "amount": { "min": 0.1, "max": 90000.0 },
-      "price": { "min": 1e-6, "max": 10.0 },
-      "cost": { "min": 0.1, "max": null },
-      "market": { "min": 0.0, "max": 10000.0 }
-    },
-    "id": "XRPBNB",
-    "lowercaseId": "xrpbnb",
-    "symbol": "XRP/BNB",
-    "base": "XRP",
-    "quote": "BNB",
-    "baseId": "XRP",
-    "quoteId": "BNB",
-    "info": {
+    {
       "symbol": "XRPBNB",
       "status": "TRADING",
       "baseAsset": "XRP",
-      "baseAssetPrecision": "8",
+      "baseAssetPrecision": 8,
       "quoteAsset": "BNB",
-      "quotePrecision": "8",
-      "quoteAssetPrecision": "8",
-      "baseCommissionPrecision": "8",
-      "quoteCommissionPrecision": "8",
+      "quotePrecision": 8,
+      "quoteAssetPrecision": 8,
+      "baseCommissionPrecision": 8,
+      "quoteCommissionPrecision": 8,
       "orderTypes": [
         "LIMIT",
         "LIMIT_MAKER",
@@ -1819,7 +1348,7 @@
           "filterType": "PERCENT_PRICE",
           "multiplierUp": "5",
           "multiplierDown": "0.2",
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
         {
           "filterType": "LOT_SIZE",
@@ -1831,32 +1360,28 @@
           "filterType": "MIN_NOTIONAL",
           "minNotional": "0.10000000",
           "applyToMarket": true,
-          "avgPriceMins": "5"
+          "avgPriceMins": 5
         },
-        { "filterType": "ICEBERG_PARTS", "limit": "10" },
+        {
+          "filterType": "ICEBERG_PARTS",
+          "limit": 10
+        },
         {
           "filterType": "MARKET_LOT_SIZE",
           "minQty": "0.00000000",
           "maxQty": "10000.00000000",
           "stepSize": "0.00000000"
         },
-        { "filterType": "MAX_NUM_ORDERS", "maxNumOrders": "200" },
-        { "filterType": "MAX_NUM_ALGO_ORDERS", "maxNumAlgoOrders": "5" }
+        {
+          "filterType": "MAX_NUM_ORDERS",
+          "maxNumOrders": 200
+        },
+        {
+          "filterType": "MAX_NUM_ALGO_ORDERS",
+          "maxNumAlgoOrders": 5
+        }
       ],
       "permissions": ["SPOT"]
-    },
-    "spot": true,
-    "type": "spot",
-    "margin": false,
-    "future": false,
-    "delivery": false,
-    "linear": false,
-    "inverse": false,
-    "expiry": null,
-    "expiryDatetime": null,
-    "settleId": null,
-    "settle": null,
-    "active": true,
-    "contractSize": null
-  }
+    }
+  ]
 }
