@@ -23,11 +23,11 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import collections
 import json
 
-from backtrader import BrokerBase, OrderBase, Order
+import backtrader as bt
+from backtrader import BrokerBase, OrderBase, Order, BuyOrder, SellOrder
 from backtrader.position import Position
 from backtrader.utils.py3 import queue, with_metaclass
 
-from .ccxtstore import CCXTStore
 
 
 class CCXTOrder(OrderBase):
@@ -40,6 +40,8 @@ class CCXTOrder(OrderBase):
         self.size = float(ccxt_order["amount"])
 
         super(CCXTOrder, self).__init__()
+from ccxtbt.ccxtstore import CCXTStore
+from ccxtbt.exceptions import UnsupportedOrderType
 
 
 class MetaCCXTBroker(BrokerBase.__class__):
@@ -104,6 +106,7 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
     mappings = {
         "closed_order": {"key": "status", "value": "closed"},
         "canceled_order": {"key": "status", "value": "canceled"},
+        "stop_price": {"key": "stopPrice"},
     }
 
     def __init__(self, broker_mapping=None, debug=False, **kwargs):
@@ -112,6 +115,7 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
         if broker_mapping is not None:
             try:
                 self.order_types = broker_mapping["order_types"]
+                self.order_types_rev = {value: key for key, value in self.order_types.items()}
             except KeyError:  # Might not want to change the order types
                 pass
             try:
@@ -123,6 +127,8 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
 
         self.currency = self.store.currency
 
+        self.orders = collections.OrderedDict()  # orders by order id
+        self.opending = collections.defaultdict(list)  # pending transmission
         self.positions = collections.defaultdict(Position)
 
         self.debug = debug
@@ -250,6 +256,34 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
                 self.open_orders.remove(o_order)
                 o_order.cancel()
                 self.notify(o_order)
+    def orderstatus(self, order):
+        o = self.orders[order.ref]
+        return o.status
+
+    def _submit(self, oref):
+        order = self.orders[oref]
+        order.submit()
+        self.notify(order)
+
+    def _reject(self, oref):
+        order = self.orders[oref]
+        order.reject()
+        self.notify(order)
+
+    def _accept(self, oref):
+        order = self.orders[oref]
+        order.accept()
+        self.notify(order)
+
+    def _cancel(self, oref):
+        order = self.orders[oref]
+        order.cancel()
+        self.notify(order)
+
+    def _expire(self, oref):
+        order = self.orders[oref]
+        order.expire()
+        self.notify(order)
 
     def _submit(self, owner, data, exectype, side, amount, price, params):
         if amount == 0 or price == 0:
@@ -294,6 +328,44 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
         self.notify(order)
         return order
 
+    def _transmit(self, order):
+        oref = order.ref
+        pref = getattr(order.parent, "ref", oref)  # parent ref or self
+
+        if self.order_types.get(order.exectype) is None:
+            raise UnsupportedOrderType(
+                f"Order {Order.ExecTypes[order.exectype]} not found in mapping"
+            )
+        if order.transmit:
+            if oref != pref:  # children order
+                # get pending orders, parent is needed, child may be None
+                pending = self.opending.pop(pref)
+                # ensure there are two items in list before unpacking
+                while len(pending) < 2:
+                    pending.append(None)
+                parent, child = pending
+                # set takeside and stopside
+                if order.exectype in [order.StopTrail, order.Stop]:
+                    stopside = order
+                    takeside = child
+                else:
+                    takeside = order
+                    stopside = child
+                for o in parent, stopside, takeside:
+                    self.orders[o.ref] = o  # write them down
+
+                self.brackets[pref] = [parent, stopside, takeside]
+                self.store.order_create(parent, stopside, takeside)
+                return takeside  # parent was already returned
+
+            else:  # Parent order, which is not being transmitted
+                self.orders[order.ref] = order
+                return self.store.order_create(order)
+
+        # Not transmitting
+        self.opending[pref].append(order)
+        return order
+
     def buy(
         self,
         owner,
@@ -307,11 +379,28 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
         oco=None,
         trailamount=None,
         trailpercent=None,
-        **kwargs
+        parent=None,
+        transmit=True,
+        **kwargs,
     ):
-        del kwargs["parent"]
-        del kwargs["transmit"]
-        return self._submit(owner, data, exectype, "buy", size, price, kwargs)
+        order = BuyOrder(
+            owner=owner,
+            data=data,
+            size=size,
+            price=price,
+            pricelimit=plimit,
+            exectype=exectype,
+            valid=valid,
+            tradeid=tradeid,
+            trailamount=trailamount,
+            trailpercent=trailpercent,
+            parent=parent,
+            transmit=transmit,
+        )
+
+        order.addinfo(**kwargs)
+        order.addcomminfo(self.getcommissioninfo(data))
+        return self._transmit(order)
 
     def sell(
         self,
@@ -326,11 +415,28 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
         oco=None,
         trailamount=None,
         trailpercent=None,
-        **kwargs
+        parent=None,
+        transmit=True,
+        **kwargs,
     ):
-        del kwargs["parent"]
-        del kwargs["transmit"]
-        return self._submit(owner, data, exectype, "sell", size, price, kwargs)
+        order = SellOrder(
+            owner=owner,
+            data=data,
+            size=size,
+            price=price,
+            pricelimit=plimit,
+            exectype=exectype,
+            valid=valid,
+            tradeid=tradeid,
+            trailamount=trailamount,
+            trailpercent=trailpercent,
+            parent=parent,
+            transmit=transmit,
+        )
+
+        order.addinfo(**kwargs)
+        order.addcomminfo(self.getcommissioninfo(data))
+        return self._transmit(order)
 
     def cancel(self, order):
 

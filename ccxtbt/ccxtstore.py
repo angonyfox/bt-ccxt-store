@@ -106,10 +106,15 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         super().__init__()
 
         self.notifs = collections.deque()  # store notifications for cerebro
+
         self.broker = None  # broker instance
         self.datas = list()  # datas that have registered over start
+
         self._env = None  # reference to cerebro for general notifications
         self._evt_acct = threading.Event()
+        self._orders = collections.OrderedDict()  # map order.ref to order id
+        self._ordersrev = collections.OrderedDict()  # map order id to order.ref
+        self._trades = collections.OrderedDict()  # map order.ref to trade id
         self.exchange = getattr(ccxt, exchange)(config)
         if sandbox:
             self.exchange.set_sandbox_mode(True)
@@ -158,6 +163,7 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         # signal end of thread
         if self.broker is not None:
             self.q_account.put(None)
+            self.q_ordercreate.put(None)
 
     def put_notification(self, msg, *args, **kwargs):
         """Adds a notification"""
@@ -239,6 +245,11 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         t.daemon = True
         t.start()
 
+        self.q_ordercreate = queue.Queue()
+        t = threading.Thread(target=self._t_order_create)
+        t.daemon = True
+        t.start()
+
         # Wait once for the values to be set
         self._evt_acct.wait(self.p.account_poll_timeout)
 
@@ -270,6 +281,67 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
             symbol=symbol, type=order_type, side=side, amount=amount, price=price, params=params
         )
 
+    def order_create(self, order, stopside=None, takeside=None, **kwargs):
+        """Create an order"""
+        okwargs = dict()
+        params = order.info["params"] if "params" in order.info else dict(order.info)
+        okwargs["symbol"] = order.data._name if order.data._name else order.data._dataname
+        # TODO: check valid order type in market
+        okwargs["type"] = self.broker.order_types.get(order.exectype)
+        okwargs["side"] = "buy" if order.isbuy() else "sell"
+        okwargs["amount"] = order.created.size
+        if order.exectype in [bt.Order.Limit, bt.Order.StopLimit]:
+            okwargs["price"] = order.created.price
+        elif order.exectype in [bt.Order.Stop]:
+            stop_price_key = self.broker.mappings["stop_price"]["key"]
+            params[stop_price_key] = order.created.price
+        if order.exectype == bt.Order.StopLimit:
+            stop_price_key = self.broker.mappings["stop_price"]["key"]
+            if order.created.plimit:
+                params[stop_price_key] = order.created.plimit
+
+        okwargs["params"] = params
+
+        self.q_ordercreate.put(
+            (
+                order.ref,
+                okwargs,
+            )
+        )
+
+        return order
+
+    def _t_order_create(self):
+        while True:
+            if self.q_ordercreate.empty():
+                continue
+            msg = self.q_ordercreate.get()
+            if msg is None:
+                continue
+            oref, okwargs = msg
+
+            try:
+                ret_ord = self.exchange.create_order(**okwargs)
+                # print(ret_ord)
+            except Exception as e:
+                self.put_notification(str(e))
+                self.broker._reject(oref)
+                continue
+
+            try:
+                oid = ret_ord["id"]
+            except Exception as e:
+                self.put_notification(f"Error from server: {str(e)}")
+                self.broker._reject(oref)
+                continue
+
+            self.broker._submit(oref)
+            if self.broker.order_types_rev[okwargs["type"]] == bt.Order.Market:
+                self.broker._accept(oref)  # taken immediately
+
+            self._orders[oref] = oid
+            self._ordersrev[oid] = oref  # maps ids to backtrader order
+
     @retry
     def cancel_order(self, order_id, symbol):
         return self.exchange.cancel_order(order_id, symbol)
@@ -297,7 +369,9 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         if symbol is None:
             return self.exchange.fetchOpenOrders(since=since, limit=limit, params=params)
         else:
-            return self.exchange.fetchOpenOrders(symbol=symbol, since=since, limit=limit, params=params)
+            return self.exchange.fetchOpenOrders(
+                symbol=symbol, since=since, limit=limit, params=params
+            )
 
     @retry
     def private_end_point(self, type, endpoint, params):
