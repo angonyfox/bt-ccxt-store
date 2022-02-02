@@ -124,7 +124,6 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
 
         self.notifs = queue.Queue()  # holds orders which are notified
 
-        self.open_orders = list()
 
         self.startingcash = self.store._cash
         self.startingvalue = self.store._value
@@ -184,66 +183,6 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
             pos = pos.clone()
         return pos
 
-    def next(self):
-        if self.debug:
-            print("Broker next() called")
-
-        for o_order in list(self.open_orders):
-            oID = o_order.ccxt_order["id"]
-
-            # Print debug before fetching so we know which order is giving an
-            # issue if it crashes
-            if self.debug:
-                print("Fetching Order ID: {}".format(oID))
-
-            # Get the order
-            ccxt_order = self.store.fetch_order(oID, o_order.data.p.dataname)
-
-            # Check for new fills
-            if "trades" in ccxt_order and ccxt_order["trades"] is not None:
-                for fill in ccxt_order["trades"]:
-                    if fill not in o_order.executed_fills:
-                        o_order.execute(
-                            fill["datetime"],
-                            fill["amount"],
-                            fill["price"],
-                            0,
-                            0.0,
-                            0.0,
-                            0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            0.0,
-                            0,
-                            0.0,
-                        )
-                        o_order.executed_fills.append(fill["id"])
-
-            if self.debug:
-                print(json.dumps(ccxt_order, indent=self.indent))
-
-            # Check if the order is closed
-            if (
-                ccxt_order[self.mappings["closed_order"]["key"]]
-                == self.mappings["closed_order"]["value"]
-            ):
-                pos = self.getposition(o_order.data, clone=False)
-                pos.update(o_order.size, o_order.price)
-                o_order.completed()
-                self.notify(o_order)
-                self.open_orders.remove(o_order)
-                self.get_balance()
-
-            # Manage case when an order is being Canceled from the Exchange
-            #  from https://github.com/juancols/bt-ccxt-store/
-            if (
-                ccxt_order[self.mappings["canceled_order"]["key"]]
-                == self.mappings["canceled_order"]["value"]
-            ):
-                self.open_orders.remove(o_order)
-                o_order.cancel()
-                self.notify(o_order)
     def orderstatus(self, order):
         o = self.orders[order.ref]
         return o.status
