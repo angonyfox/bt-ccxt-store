@@ -277,6 +277,30 @@ class TestBroker:
         except Exception as e:
             pytest.fail(f"Unexpected Error: {str(e)}")
 
+    def test_order_brackets(self, binance_config):
+        broker = ccxtbt.CCXTBroker(**binance_config)
+        data = FakeData()
+        strategy = BlankStrategy()
+        broker.start()
+
+        try:
+            p1 = 1
+            p2 = p1 - 0.02
+            p3 = p1 + 0.02
+            o1 = broker.buy(
+                strategy, data, exectype=bt.Order.Limit, price=p1, size=1, transmit=False
+            )
+            o2 = broker.sell(
+                strategy, data, exectype=bt.Order.Stop, price=p2, size=1, parent=o1, transmit=False
+            )
+            o3 = broker.sell(
+                strategy, data, exectype=bt.Order.Limit, price=p3, size=1, parent=o1, transmit=True
+            )
+            assert len(broker.brackets) == 1
+            assert len(broker.brackets[1]) == 3
+        except Exception as e:
+            pytest.fail(f"Unexpected Error: {str(e)}")
+
     def test_order_submit(self, binance_config):
         broker = ccxtbt.CCXTBroker(**binance_config)
         data = FakeData("BTC/USDT")
