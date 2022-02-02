@@ -326,40 +326,12 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
 
     def cancel(self, order):
 
-        oID = order.ccxt_order["id"]
+        if not self.orders.get(order.ref, False):
+            return
+        if order.status == Order.Cancelled:  # already cancelled
+            return
 
-        if self.debug:
-            print("Broker cancel() called")
-            print("Fetching Order ID: {}".format(oID))
-
-        # check first if the order has already been filled otherwise an error
-        # might be raised if we try to cancel an order that is not open.
-        ccxt_order = self.store.fetch_order(oID, order.data.p.dataname)
-
-        if self.debug:
-            print(json.dumps(ccxt_order, indent=self.indent))
-
-        if (
-            ccxt_order[self.mappings["closed_order"]["key"]]
-            == self.mappings["closed_order"]["value"]
-        ):
-            return order
-
-        ccxt_order = self.store.cancel_order(oID, order.data.p.dataname)
-
-        if self.debug:
-            print(json.dumps(ccxt_order, indent=self.indent))
-            print("Value Received: {}".format(ccxt_order[self.mappings["canceled_order"]["key"]]))
-            print("Value Expected: {}".format(self.mappings["canceled_order"]["value"]))
-
-        if (
-            ccxt_order[self.mappings["canceled_order"]["key"]]
-            == self.mappings["canceled_order"]["value"]
-        ):
-            self.open_orders.remove(order)
-            order.cancel()
-            self.notify(order)
-        return order
+        return self.store.order_cancel(order)
 
     def get_orders_open(self, symbol=None, since=None, limit=None, params={}):
         return self.store.fetch_open_orders(symbol=symbol, since=since, limit=limit, params=params)

@@ -164,6 +164,7 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         if self.broker is not None:
             self.q_account.put(None)
             self.q_ordercreate.put(None)
+            self.q_orderclose.put(None)
 
     def put_notification(self, msg, *args, **kwargs):
         """Adds a notification"""
@@ -247,6 +248,11 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
 
         self.q_ordercreate = queue.Queue()
         t = threading.Thread(target=self._t_order_create)
+        t.daemon = True
+        t.start()
+
+        self.q_orderclose = queue.Queue()
+        t = threading.Thread(target=self._t_order_cancel)
         t.daemon = True
         t.start()
 
@@ -346,6 +352,27 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
     def cancel_order(self, order_id, symbol):
         return self.exchange.cancel_order(order_id, symbol)
 
+    def order_cancel(self, order):
+        self.q_orderclose.put(order.ref)
+        return order
+
+    def _t_order_cancel(self):
+        while True:
+            oref = self.q_orderclose.get()
+            if oref is None:
+                break
+            oid = self._orders.get(oref, None)
+            if oid is None:
+                continue  # the order is no longer there
+
+            try:
+                order = self.orders.get(order.ref, False)
+                symbol = order.data.p.dataname
+                self.store.cancel_order(oid, symbol)
+                self.broker._cancel(oref)
+            except Exception as e:
+                self.put_notification(f"Order not cancelled: {oid}, {str(e)}")
+                continue
     @retry
     def fetch_trades(self, symbol):
         return self.exchange.fetch_trades(symbol)
