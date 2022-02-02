@@ -22,15 +22,214 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import collections
 import threading
+import asyncio
 import time
-from datetime import datetime
+import json
+from enum import Enum
+from datetime import datetime, timezone
 from functools import wraps
 
 import backtrader as bt
 import ccxt
+import ccxt.async_support as ccxt_async
 from backtrader.metabase import MetaParams
 from backtrader.utils.py3 import queue, with_metaclass
 from ccxt.base.errors import NetworkError, ExchangeError
+
+
+class PollingMethod(Enum):
+    OrderStatus = "order_status"
+    Transaction = "transaction"
+
+
+class Poller:
+    def __init__(self, store, q, exchange, config={}, sandbox=False, method=None, *args, **kwargs):
+
+        try:
+            self.loop = asyncio.get_event_loop()
+        except RuntimeError:
+            self.loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(self.loop)
+
+        exch_config = config.copy()
+        exch_config["asyncio_loop"] = self.loop
+
+        self.store = store
+        self.exchange = getattr(ccxt_async, exchange)(exch_config)
+        self.exchange.set_sandbox_mode(sandbox)
+        self.method = method
+        self.q = q
+
+        self.trades_since = {}
+
+    async def process_updated_order(self, oref, oid):
+        order = self.store.broker.orders[oref]
+        symbol = order.data._dataname
+        print("fetch_order")
+        ccxt_order = await self.exchange.fetch_order(oid, symbol)
+
+        if ccxt_order["status"] == "canceled":
+            self.store.broker._cancel(oref)
+        elif ccxt_order["status"] == "rejected":
+            self.store.broker._reject(oref)
+        elif ccxt_order["status"] == "expired":
+            self.store.broker._expire(oref)
+        self.store.open_orders.pop(oref)
+
+    async def fetch_updated_order(self):
+        while True:
+            try:
+                try:
+                    first_oref, first_oid = next(iter(self.store.open_orders.items()))
+                except StopIteration:
+                    await asyncio.sleep(self.exchange.rateLimit / 1000)
+                    continue
+                first_order = self.store.broker.orders[first_oref]
+                # 'since' in milliseconds
+                first_order_date = bt.num2date(first_order.created.dt)
+                first_order_timestamp = (
+                    datetime.timestamp(first_order_date) * 1000
+                )  # Convert to milliseconds
+
+                symbol = first_order.data._dataname
+                o_orders = await self.exchange.fetch_open_orders(
+                    symbol, since=first_order_timestamp
+                )
+                # still open order
+                o_orders_ids = [int(o["id"]) for o in o_orders]
+                # order that not in open status
+                changed_order = {
+                    k: v for k, v in self.store.open_orders.items() if v not in o_orders_ids
+                }
+                tasks = [
+                    asyncio.create_task(self.process_updated_order(oref, oid))
+                    for oref, oid in changed_order.items()
+                ]
+                await asyncio.gather(*tasks)
+            except Exception as e:
+                print(e)
+            await asyncio.sleep(self.exchange.rateLimit / 1000)
+
+    async def fetch_transaction_per_symbol(self, symbol):
+        trades = await self.exchange.fetch_my_trades(symbol, since=self.trades_since[symbol])
+
+        if len(trades):
+            since = trades[len(trades) - 1]["timestamp"]
+            self.trades_since[symbol] = max(since, self.trades_since[symbol])
+            for trade in trades:
+                self.process_transaction(trade)
+        await asyncio.sleep(1)
+
+    def process_transaction(self, trade):
+        # {
+        #     'timestamp': 1642926029695,
+        #     'datetime':'2022-01-23T08:20:29.695Z',
+        #     'symbol':'BTC/USDT',
+        #     'id':'2038231',
+        #     'order':'9324938',
+        #     'type':None,
+        #     'side':'buy',
+        #     'takerOrMaker':'taker',
+        #     'price':35607.55,
+        #     'amount':0.014042,
+        #     'cost':500.0012171,
+        #     'fee': {
+        #         'cost': 0,
+        #         'currency': 'BTC'
+        #     },
+        #     'fees': [{
+        #         'cost': 0,
+        #         'currency': 'BTC'
+        #     }]
+        # }
+        oid = int(trade["order"])
+        if oid in self.store._ordersrev:
+            oref = self.store._ordersrev[oid]
+            order = self.store.broker.orders[oref]
+
+            if order.status in [bt.Order.Completed]:
+                return
+
+            stored_exbits = [
+                {k: v for k, v in vars(x).items() if k in ["dt", "size", "price"]}
+                for x in order.executed.exbits
+            ]
+            t = {
+                "dt": datetime.utcfromtimestamp(trade["timestamp"] / 1000),
+                "size": trade["amount"],
+                "price": trade["price"],
+            }
+
+            if t not in stored_exbits:
+                dt = t["dt"]
+                size = t["size"]
+                price = t["price"]
+
+                # getposition
+                psize = size
+                pprice = price
+                closed = 0
+                opened = 0
+
+                closedvalue = closedcomm = 0.0
+                openedvalue = openedcomm = 0.0
+                margin = pnl = 0.0
+
+                # fmt: off
+                order.execute(
+                    dt, size, price,
+                    closed, closedvalue, closedcomm,
+                    opened, openedvalue, openedcomm,
+                    margin, pnl,
+                    psize, pprice,
+                )
+                # fmt: on
+
+                self.store.broker.notify(order)
+                # remove completed order from store.open_orders
+                if not order.executed.remsize:
+                    self.store.open_orders.pop(oref)
+
+    async def fetch_transaction(self):
+        start_since = self.exchange.milliseconds()
+
+        while True:
+            try:
+                symbols = {order.data._dataname for _, order in self.store.broker.orders.items()}
+                for symbol in symbols:
+                    if symbol not in self.trades_since:
+                        self.trades_since[symbol] = start_since
+                tasks = [
+                    asyncio.create_task(self.fetch_transaction_per_symbol(symbol))
+                    for symbol in symbols
+                ]
+                await asyncio.gather(*tasks)
+            except Exception as e:
+                print(e)
+            await asyncio.sleep(self.exchange.rateLimit / 1000)
+
+    async def stop_async(self):
+        await self.exchange.close()
+
+    def stop(self):
+        self.loop.run_until_complete(self.stop_async())
+
+    def close(self):
+        self.loop.stop()
+        self.loop.close()
+
+    def run(self):
+        try:
+            if self.method == PollingMethod.OrderStatus:
+                poll_method = self.fetch_updated_order()
+            elif self.method == PollingMethod.Transaction:
+                poll_method = self.fetch_transaction()
+            self.loop.run_until_complete(poll_method)
+        except Exception as e:
+            print(f"{e}")
+        finally:
+            self.stop()
+            self.close()
 
 
 class MetaSingleton(MetaParams):
@@ -116,12 +315,16 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         self._ordersrev = collections.OrderedDict()  # map order id to order.ref
         self.open_orders = collections.OrderedDict()  # map open order
         self._trades = collections.OrderedDict()  # map order.ref to trade id
+        self.exchange_name = exchange
+        self.exchange_config = config
+        self.exchange_sandbox = sandbox
         self.exchange = getattr(ccxt, exchange)(config)
         self.exchange.set_sandbox_mode(sandbox)
         self.currency = currency
         self.retries = retries
         self.debug = debug
         self.balances = dict()
+        self.poller = dict()
 
         # balance = self.exchange.fetch_balance() if "secret" in config else 0
         # try:
@@ -157,6 +360,7 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
 
         elif broker is not None:
             self.broker = broker
+            self.polling_events()
             self.broker_threads()
 
     def stop(self):
@@ -238,6 +442,49 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
     def getposition(self):
         return self._value
         # return self.getvalue(currency)
+
+    def polling_events(self):
+        q = queue.Queue()
+        kwargs = {
+            "q": q,
+            "exchange": self.exchange_name,
+            "config": self.exchange_config,
+            "sandbox": self.exchange_sandbox,
+        }
+
+        t = threading.Thread(target=self._t_polling_order_status, kwargs=kwargs)
+        t.daemon = True
+        t.start()
+
+        t = threading.Thread(target=self._t_polling_transaction, kwargs=kwargs)
+        t.daemon = True
+        t.start()
+
+        return q
+
+    def _t_polling_order_status(self, q, exchange, config={}, sandbox=False):
+        poller = Poller(
+            store=self,
+            q=q,
+            exchange=exchange,
+            config=config,
+            sandbox=sandbox,
+            method=PollingMethod.OrderStatus,
+        )
+        self.poller["order_status"] = poller
+        poller.run()
+
+    def _t_polling_transaction(self, q, exchange, config={}, sandbox=False):
+        poller = Poller(
+            store=self,
+            q=q,
+            exchange=exchange,
+            config=config,
+            sandbox=sandbox,
+            method=PollingMethod.Transaction,
+        )
+        self.poller["transaction"] = poller
+        poller.run()
 
     def broker_threads(self):
         self.q_account = queue.Queue()
