@@ -114,6 +114,7 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         self._evt_acct = threading.Event()
         self._orders = collections.OrderedDict()  # map order.ref to order id
         self._ordersrev = collections.OrderedDict()  # map order id to order.ref
+        self.open_orders = collections.OrderedDict()  # map open order
         self._trades = collections.OrderedDict()  # map order.ref to trade id
         self.exchange = getattr(ccxt, exchange)(config)
         self.exchange.set_sandbox_mode(sandbox)
@@ -349,6 +350,7 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
 
             self._orders[oref] = oid
             self._ordersrev[oid] = oref  # maps ids to backtrader order
+            self.open_orders[oref] = oid
 
     @retry
     def cancel_order(self, order_id, symbol):
@@ -372,9 +374,11 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
                 symbol = order.data.p.dataname
                 self.store.cancel_order(oid, symbol)
                 self.broker._cancel(oref)
+                self.store.open_orders.pop(oref)
             except Exception as e:
                 self.put_notification(f"Order not cancelled: {oid}, {str(e)}")
                 continue
+
     @retry
     def fetch_trades(self, symbol):
         return self.exchange.fetch_trades(symbol)
