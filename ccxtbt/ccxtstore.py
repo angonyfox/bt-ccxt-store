@@ -116,8 +116,7 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
         self._ordersrev = collections.OrderedDict()  # map order id to order.ref
         self._trades = collections.OrderedDict()  # map order.ref to trade id
         self.exchange = getattr(ccxt, exchange)(config)
-        if sandbox:
-            self.exchange.set_sandbox_mode(True)
+        self.exchange.set_sandbox_mode(sandbox)
         self.currency = currency
         self.retries = retries
         self.debug = debug
