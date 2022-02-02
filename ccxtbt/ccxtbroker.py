@@ -117,6 +117,7 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
 
         self.orders = collections.OrderedDict()  # orders by order id
         self.opending = collections.defaultdict(list)  # pending transmission
+        self.brackets = dict()
         self.positions = collections.defaultdict(Position)
 
         self.debug = debug
