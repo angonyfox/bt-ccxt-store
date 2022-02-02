@@ -342,7 +342,10 @@ class CCXTStore(with_metaclass(MetaSingleton, object)):
                 continue
 
             self.broker._submit(oref)
-            if self.broker.order_types_rev[okwargs["type"]] == bt.Order.Market:
+            if (
+                self.broker.order_types_rev[okwargs["type"]] == bt.Order.Market
+                or ret_ord["status"] == "open"
+            ):
                 self.broker._accept(oref)  # taken immediately
 
             self._orders[oref] = oid
