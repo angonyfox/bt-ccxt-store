@@ -1,0 +1,80 @@
+{
+    "symbol": "BTCUSDT",
+    "orderId": "7008515",
+    "orderListId": "-1",
+    "clientOrderId": "x-R4BD3S82de5ff360683dca4845cea",
+    "transactTime": "1642492276253",
+    "price": "0.00000000",
+    "origQty": "0.10000000",
+    "executedQty": "0.10000000",
+    "cummulativeQuoteQty": "4205.73086379",
+    "status": "FILLED",
+    "timeInForce": "GTC",
+    "type": "MARKET",
+    "side": "BUY",
+    "fills": [
+        {
+            "price": "42055.37000000",
+            "qty": "0.01189000",
+            "commission": "0.00000000",
+            "commissionAsset": "BTC",
+            "tradeId": "1462251"
+        },
+        {
+            "price": "42055.40000000",
+            "qty": "0.01189000",
+            "commission": "0.00000000",
+            "commissionAsset": "BTC",
+            "tradeId": "1462252"
+        },
+        {
+            "price": "42056.21000000",
+            "qty": "0.01188900",
+            "commission": "0.00000000",
+            "commissionAsset": "BTC",
+            "tradeId": "1462253"
+        },
+        {
+            "price": "42056.37000000",
+            "qty": "0.01188900",
+            "commission": "0.00000000",
+            "commissionAsset": "BTC",
+            "tradeId": "1462254"
+        },
+        {
+            "price": "42057.27000000",
+            "qty": "0.01188900",
+            "commission": "0.00000000",
+            "commissionAsset": "BTC",
+            "tradeId": "1462255"
+        },
+        {
+            "price": "42057.41000000",
+            "qty": "0.01188900",
+            "commission": "0.00000000",
+            "commissionAsset": "BTC",
+            "tradeId": "1462256"
+        },
+        {
+            "price": "42057.55000000",
+            "qty": "0.01188900",
+            "commission": "0.00000000",
+            "commissionAsset": "BTC",
+            "tradeId": "1462257"
+        },
+        {
+            "price": "42061.06000000",
+            "qty": "0.01188800",
+            "commission": "0.00000000",
+            "commissionAsset": "BTC",
+            "tradeId": "1462258"
+        },
+        {
+            "price": "42061.76000000",
+            "qty": "0.00488700",
+            "commission": "0.00000000",
+            "commissionAsset": "BTC",
+            "tradeId": "1462259"
+        }
+    ]
+}
