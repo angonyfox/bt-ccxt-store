@@ -28,18 +28,6 @@ from backtrader import BrokerBase, OrderBase, Order, BuyOrder, SellOrder
 from backtrader.position import Position
 from backtrader.utils.py3 import queue, with_metaclass
 
-
-
-class CCXTOrder(OrderBase):
-    def __init__(self, owner, data, ccxt_order):
-        self.owner = owner
-        self.data = data
-        self.ccxt_order = ccxt_order
-        self.executed_fills = []
-        self.ordtype = self.Buy if ccxt_order["side"] == "buy" else self.Sell
-        self.size = float(ccxt_order["amount"])
-
-        super(CCXTOrder, self).__init__()
 from ccxtbt.ccxtstore import CCXTStore
 from ccxtbt.exceptions import UnsupportedOrderType
 
